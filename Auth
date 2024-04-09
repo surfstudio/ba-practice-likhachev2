@@ -1,0 +1,107 @@
+openapi: "3.0.0"
+info:
+  title: "Ужин дома API на авторизацию"
+  version: "1.0.0"
+  description: |
+    Документ содержит описание описание API запросов для авторизации и регистрации пользователей в приложении "Ужин дома".
+
+servers:
+- url: https://dinerathome.ru
+  description: test server
+
+security:
+  - bearerAuth: []
+
+paths:
+  /user/phone:
+    post:
+      summary: Отправка номера телефона для получения ОТП
+      security: []
+      requestBody:
+        description: тело запроса
+        content:
+          application/json:
+            schema:
+              properties:
+                phone: 
+                  type: string
+                  example: "79991112233"
+      responses:
+        '200':
+          description: |
+            Пользователю был отправлен одноразовый пароль
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+        '500':
+          description: |
+            Сервер не может выполнить запрос пользователя
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
+
+  /user/code:
+    post:
+      summary: Запрос на авторизацию с помощью одноразового пароля
+      security: []
+      requestBody:
+        description: Тело запроса
+        content:
+          application/json:
+            schema:
+              properties:
+                code:
+                  type: integer
+                  example: 1234
+      responses:
+        "200":
+          description: |
+            Пароль верный
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/AccessToken"
+        '500':
+          description: |
+            Сервер не может выполнить запрос пользователя
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+    authApiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+  
+  schemas:
+
+    OkResponse:
+      properties:
+        message:
+          type: string
+          example: "OK"
+
+    ServerError:
+      properties:
+        message:
+          type: string
+          example: "Server Error"
+    
+    AccessToken:
+      type: object
+      properties:
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5"
