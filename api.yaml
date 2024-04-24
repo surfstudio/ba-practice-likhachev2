@@ -1,0 +1,157 @@
+openapi: 3.0.2
+info:
+  title: "API"
+  version: "1.0.0"
+  contact:
+    name: Фамилия Имя
+    email: zzz@surfstudio.ru
+
+paths:
+  /catalog/weeks:
+    get:
+      summary: Получение списка недель
+      responses:
+        "200":
+          description: "Все ок"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  weeks:
+                    type: array
+                    items:
+                      $ref: "models.yaml#/components/schemas/WeekItem"
+        "400":
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "models.yaml#/components/schemas/Errors"
+
+  /catalog:
+    get:
+      summary: Получение меню
+      parameters:
+        - name: week
+          required: true
+          in: query
+          schema:
+            type: string
+          description: ID выбранной недели
+      responses:
+        "200":
+          description: "Все ок"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  categories:
+                    type: array
+                    items:
+                      $ref: "models.yaml#/components/schemas/CategoryItem"
+        "400":
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "models.yaml#/components/schemas/Errors"
+  
+  /cart/info:
+    get:
+      summary: Получение данных о корзине
+      responses:
+        "200":
+          description: "Все ок"
+          content:
+            application/json:
+              schema:
+                $ref: "models.yaml#/components/schemas/Cart"
+        "204":
+          description: "Корзина пуста"
+          content:
+            application/json:
+              schema:
+                $ref: "models.yaml#/components/schemas/Success"
+        "400":
+          description: "Ошибка"
+          content:
+            application/json:
+              schema:
+                $ref: "models.yaml#/components/schemas/Errors"
+
+  /cart:    
+    patch:
+      summary: Изменение товаров и их количества в корзине
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "models.yaml#/components/schemas/DishToCart"
+      responses:
+        "200":
+          description: "Все ок"
+          content:
+            application/json:
+              schema:
+                $ref: "models.yaml#/components/schemas/Success"
+        "400":
+          description: "Ошибка"
+          content:
+            application/json:
+              schema:
+                $ref: "models.yaml#/components/schemas/Errors"
+
+    delete:
+      summary: Очистка корзины
+      responses:
+        "200":
+          description: "Всё ок"
+          content:
+            application/json:
+              schema:
+                $ref: "models.yaml#/components/schemas/Success"
+        "400":
+          description: "Ошибка"
+          content:
+            application/json:
+              schema:
+                $ref: "models.yaml#/components/schemas/Errors"
+
+  /user/discount:
+    get:
+      summary: Получение значение скидки и подробной информации
+      responses:
+        "200":
+          description: "Все ок"
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: integer
+                    description: значение скидки пользователя
+                    example: 13
+                    nullable: false
+                  title:
+                    type: string
+                    description: Заголовок верхней шторки "Информация о скидке"
+                    example: "Как получить скидку?"
+                    nullable: false
+                  deadline:
+                    type: string
+                    description: информация о сроке действия накопительной скидки
+                    example: "действует при заказе до 23:59 среды"
+                    nullable: true
+                  text:
+                    type: string
+                    description: подробная информация о скидке
+                    nullable: false
+        "400":
+          description: "Ошибка"
+          content:
+            application/json:
+              schema:
+                $ref: "models.yaml#/components/schemas/Errors"

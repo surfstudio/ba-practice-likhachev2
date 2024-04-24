@@ -1,0 +1,236 @@
+components:
+  schemas: 
+    ItemType:
+      type: string
+      description: |
+        Тип блюда:
+         premium - премиум,
+         common - обычное,
+         extra - дополнительное.
+      example: "premium"
+    
+    WeekItem:
+      description: Неделя из списка доступных недель для заказа 
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID недели
+          example: 20240401
+          nullable: false
+        startDate:
+          type: string
+          description: Начало недели
+          example: "2024-04-01"
+          nullable: false
+        endDate:
+          type: string
+          description: дата конца недели
+          example: "2024-04-07"
+          nullable: false
+        description:
+          type: string
+          description: Дополнительное описание к неделе
+          example: Доставим 1, 3 или 4 октября
+          nullable: false
+
+    MenuItemMainLabel:
+      description: Свойства главного (праздничного) лейбла блюда
+      type: object
+      properties:
+        title:
+          type: string
+          description: Текст лейбла
+          example: "14 февраля"
+        imageUrl: 
+          type: string
+          description: Ссылка на иконку
+          example: "https://imgur.com"
+
+    MenuItemLabel:
+      description: Свойства лейбла блюда
+      type: object
+      properties:
+        title:
+          type: string
+          description: Текст лейбла
+          example: "ХИТ"
+        labelСolor: 
+          type: string
+          description: Цвет в формате HEX с прозрачностью
+          example: "FFCD5C5C"
+        textСolor:
+          type: string
+          description: Цвет в формате HEX с прозрачностью
+          example: "FFCD5C5C"
+
+    PropertiesMenuItem:
+      description: Свойства блюда
+      type: object
+      properties:
+        labels:
+          type: array
+          items:
+            $ref: "models.yaml#/components/schemas/MenuItemLabel"
+          description: Массив лейблов
+        mainLabel:
+          $ref: "models.yaml#/components/schemas/MenuItemMainLabel"
+          description: Праздничный лейбл
+        cookTime:
+          type: integer
+          description: Время приготовления блюда в минутах
+          example: 30
+        weight:
+          type: string
+          description: Вес блюда
+          example: "540 г"
+        ratio:
+          type: integer
+          description: Количество порций, по сколько элементов добавляется в корзину
+          example: 2
+        
+    MenuItem:
+      description: Конкретное блюдо
+      type: object
+      properties:
+        id:
+          type: string
+          description: id блюда
+          example: "1234"
+        name:
+          type: string
+          example: "Тортилья с уткой и тыквой в апельсиновом мармеладе (нет кавычек)"
+        price:
+          type: integer
+          description: Цена за блюдо при заказе до 5 ужинов
+          example: 471
+        measureUnit:
+          type: string
+          description: Порционность
+          example: "за порцию"
+          nullable: true
+        properties:
+          $ref: "models.yaml#/components/schemas/PropertiesMenuItem"
+          nullable: true
+        type:
+          $ref: "models.yaml#/components/schemas/ItemType"
+        isAvailable:
+          type: boolean
+          description: Доступно ли блюдо для заказа
+          nullable: false
+        imageUrl:
+          type: string
+          description: Ссылка на картинку блюда
+
+    CategoryItem:
+      description: Категория меню
+      type: object
+      properties:
+        id:
+          type: string
+          example: "10321"
+        code:
+          type: string
+          example: "originalnoe"
+        name:
+          type: string
+          example: "Оригинальное"
+        products:
+          type: array
+          items:
+            $ref: "models.yaml#/components/schemas/MenuItem"
+          description: Массив продуктов 
+        description:
+          type: string
+          description: Описание перед категорией 
+          example: "Лёгкие завтраки, сытные супы и наши фирменные десерты в дополнение к основным блюдам"
+          nullable: true
+        iconUrl: 
+          type: string
+          description: Ссылка на иконку, которая расположена над описанием категории
+          example: "https://imgur.com"
+          nullable: true
+        showCategoryName:
+          type: boolean
+          description: Показывать ли заголовок перед категорией
+          nullable: false
+    
+    DishToCart:
+      description: информация о блюде для добавление его в корзину или изменения его количества в ней
+      type: object
+      properties:
+        id:
+          type: string
+          description: id блюда
+          example: "1234"
+        amount:
+          type: integer
+          description: количество порций для добавления
+          example: 18
+
+    Сart:
+      description: Сводная информация о корзине и добавленных блюдах
+      type: object
+      properties:
+        cartInfo:
+          description: Сводная информация о корзине и добавленных в нее блюдах
+          type: object
+          properties:
+            itemsAmount:
+              type: integer
+              description: Общее количество уникальных блюд в корзине
+              example: 4
+              nullable: false
+            fullPrice:
+              type: integer
+              description: Стоимость корзины без скидки
+              example: 1766
+              nullable: false
+            totalPrice:
+              type: integer
+              description: Итоговая стоимость корзины
+              example: 1588
+              nullable: false
+            description:
+              type: string
+              description: "Описание условия для получения дополнительной скидки"
+              example: "Добавьте ещё 1 ужин для скидки 15%"
+              nullable: true
+        cartItems:
+          type: object
+          properties:
+            id:
+              type: string
+              description: id блюда
+              example: "1234"
+              nullable: false
+            amount:
+              type: integer
+              description: Количество порций блюда добавленных в корзину
+              example: 2
+              nullable: false
+
+    Success:
+      description: |
+        * 200 - OK
+        * 204 - Нет содержимого
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 204
+        message:
+          type: string
+          example: "Нет содержимого"
+
+    Errors:
+      description: |
+        * 400 - некорректный запрос
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 404
+        message:
+          type: string
+          example: "не найдено"
