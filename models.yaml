@@ -1,0 +1,220 @@
+components:
+  securitySchemes:
+    AuthApiKey:
+      description: Ключ авторизованного пользователя
+      type: apiKey
+      in: header
+      name: Authorization  
+
+  schemas:
+    CartContent:
+      type: object
+      description: Данные о корзине пользователя
+      properties:
+        cartInfo:
+          type: object
+          description: Сводная информация о корзине
+          properties:
+            fullPrice:
+              type: integer
+              description: Стоимость корзины без скидки
+              example:  2932
+              nullable: false
+            totalPrice:
+              type: integer
+              description: Итоговая стоимость корзины
+              example: 2844
+              nullable: false
+            userDiscountAmount:
+              type: integer
+              description: Сумма скидки по программе "Ужин дома Family"
+              example: 88
+              nullable: true
+            extraDiscount:
+              type: integer
+              description: Значение скидки за количество ужинов
+              example: 10
+              nullable: true
+            extraDiscountAmount:
+              type: integer
+              description: Сумма скидки за количество ужинов
+              example: 1000
+              nullable: true
+            orderIsAvailable:
+              type: boolean
+              description: Флаг о том, доступно ли оформить заказ
+              example: true
+              nullable: false
+            orderExist:
+              type: boolean
+              description: Флаг о существовании заказа
+              example: true
+              nullable: false
+        counter:
+          $ref: "models.yaml#/components/schemas/CounterInfo"
+        products:
+          type: array
+          description: Массив данных о блюдах
+          items:
+            $ref: "models.yaml#/components/schemas/ProductItem"
+
+    CounterInfo:
+      type: object
+      description: Данные для счетчика ужина
+      properties:
+        stripesAmount:
+          type: integer
+          description: Общее количество полосок счетчика
+          example: 5
+          nullable: false
+        emptyColor:
+          type: string
+          description: Цвет пустых полосок в формате HEX с прозрачностью
+          example: "#EAF2FC"
+          nullable: false
+        fullColor:
+          type: string
+          description: Цвет заполненных полосок в формате HEX c прозрачностью
+          example: "#2D7DE1"
+          nullable: false
+        dinnersAmount:
+          type: integer
+          description: Количество заполненных полосок
+          example: 3
+          nullable: false
+        message:
+          type: string
+          description: Сообщение на счетчике
+          example: "Добавьте 1 ужин для скидки 10 %"
+          nullable: false
+
+    ProductItem:
+      type: object
+      description: Данные о блюде
+      properties:
+        id:
+          type: string
+          description: Идентификатор блюда
+          example: "1234"
+          nullable: false
+        type:
+          type: string
+          description: |
+            Тип блюда
+              * premium
+              * common
+              * extra
+              * gift
+          example: "premium"
+          nullable: false
+        imageUrl:
+          type: string
+          description: Ссылка на картинку блюда
+          example: "https://imgur.com"
+          nullable: false
+        name:
+          type: string
+          description: Наименование блюда
+          example: "Говядина в хрустящей панировке с ливанским салатом Табуле"
+          nullable: false
+        totalPrice:
+          type: integer
+          description: Итоговая стоимость блюда
+          example: 770
+          nullable: false
+        fullPrice:
+          type: integer
+          description: Стоимость блюда без скидки
+          example: 856
+          nullable: false
+        amount:
+          type: integer
+          description: Количество порций блюда в корзине
+          example: 2
+          nullable: false
+        properties:
+            $ref: "models.yaml#/components/schemas/ItemProperties"
+        
+    ItemProperties:
+      type: object
+      description: Характеристики блюда
+      properties:
+        cookTime:
+          type: integer
+          description: Время приготовления блюда в минутах
+          example: 30
+          nullable: true
+        weight:
+          type: integer
+          description: Вес блюда в граммах
+          example: 720
+          nullable: true
+        ratio:
+          type: integer
+          description: Количество порций в блюде
+          example: 2
+          nullable: false
+    
+    EditDishAmount:
+      type: object
+      description: Данные для изменения товаров в корзине
+      properties:
+        id:
+          type: string
+          description: Идентификатор блюда
+          example: "1234"
+          nullable: false
+        amount:
+          type: integer
+          description: Новое значение количества порций блюда в корзине
+          example: 16
+          nullable: false
+
+    WeekItem:
+      type: object
+      description: Данные о недели
+      properties:
+        startDate:
+          type: string
+          description: Дата начала недели
+          example: "2024-04-01"
+          nullable: false
+        endDate:
+          type: string
+          description: Дата конца недели
+          example: "2024-01-07"
+          nullable: false
+        isChosen:
+          type: boolean
+          description: |
+            Флаг выбранной недели
+              Если true - неделя выбрана
+              Если false - неделя не выбрана
+          example: true
+          nullable: false
+    
+    ProfileContent:
+      type: object
+      description: Данные о скидке пользователя по программе "Ужин Дома Family"
+      properties:
+        name:
+          type: string
+          description: Имя пользователя
+          example: "Иван"
+        secondName:
+          type: string
+          description: Фамилия пользователя
+          example: "Иванов"
+        phone:
+          type: string
+          description: Номер телефона пользователя
+          example: "+7(999) 123-45-67"
+        email:
+          type: string
+          description: Email пользователя
+          example: "mail@email.com"
+        familyDiscount:
+          type: integer
+          description: Значение скидки
+          example: 3
+          nullable: false

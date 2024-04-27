@@ -1,0 +1,83 @@
+openapi: 3.0.2
+info:
+  title: "API для корзины"
+  version: "1.0.0"
+  contact:
+    name: Лихачёв Роман
+    email: lihachev@surfstudio.dev
+
+security:
+  - AuthApiKey: []
+
+paths:
+  /cart:    
+    get:
+      summary: Получение корзины пользователя
+      responses:
+        '200':
+          description: "ОК"
+          content:
+            application/json:
+              schema:
+                $ref: "models.yaml#/components/schemas/CartContent"
+        '204':
+          description: "Корзина пуста"
+        '400':
+          description: "Ошибка"
+
+    patch:
+      summary: "Изменение корзины"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "models.yaml#/components/schemas/EditDishAmount"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "models.yaml#/components/schemas/CartContent"
+        '400':
+          description: "Ошибка"
+    
+    delete:
+      summary: "Очистка корзины"
+      responses:
+        '200': 
+          description: "ОК"
+        '400':
+          description: "Ошибка"
+
+  /catalog/weeks:
+    get:
+      summary: "Получение данных о неделе"
+      responses:
+        '200':
+          description: "ОК"
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Массив недель
+                properties:
+                  weeks: 
+                    type: array
+                    items:
+                      $ref: "models.yaml#/components/schemas/WeekItem"
+        '400':
+          description: "Ошибка"
+
+  /user/profile:
+    get:
+      summary: "Получение данных о пользователе"
+      responses:
+        '200':
+          description: "ОК"
+          content:
+            application/json:
+              schema:
+                $ref: "models.yaml#/components/schemas/ProfileContent"
+        '400':
+          description: "Ошибка"
